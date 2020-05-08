@@ -12,6 +12,7 @@ import TextButton from './TextButton';
 import {submitEntry,removeEntry} from '../utils/api';
 import { addEntry } from '../store/actions';
 import { white, purple } from '../utils/color';
+import {CommonActions} from '@react-navigation/native';
 
 function SubmitBtn ({onPress}) {
     return(
@@ -76,6 +77,7 @@ class AddEntry extends Component {
         }));
         
         //Navigate to home
+        this.toHome();
         //Save to DB
         submitEntry({key,entry});
         //Clear local notification
@@ -89,11 +91,17 @@ class AddEntry extends Component {
         })) 
 
         // Route to Home 
+        this.toHome();
 
         // UPdate DB
         removeEntry(key);
     }
 
+    toHome = () => {
+        this.props.navigation.dispatch(CommonActions.goBack({
+            key: "AddEntry"
+        }))
+    }
     render(){
         const metaInfo = getMetricMetaInfo();
         if(this.props.alreadyLogged) {

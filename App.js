@@ -6,12 +6,14 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {FontAwesome, Ionicons} from '@expo/vector-icons'
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Constants from 'expo-constants'
+import Constants from 'expo-constants';
+import {createStackNavigator} from '@react-navigation/stack'
 
 import AddEntry from './components/AddEntry';
 import reducer from './store/reducers/index';
 import History from './components/History';
 import { white, purple } from './utils/color';
+import EntryDetails from './components/EntryDetails';
 
 function UdaciStatusBar ({backgroundColor, ...props}){
   return(
@@ -57,18 +59,42 @@ const TabNavigatorConfig = {
     }
   }
 };
+const TabNav = () =>(
+  <Tabs.Navigator {...TabNavigatorConfig}>
+    <Tabs.Screen {...RouteConfigs['History']}/>
+    <Tabs.Screen {...RouteConfigs['AddEntry']}/>
+  </Tabs.Navigator>
+)
+
+
+const Stack = createStackNavigator();
+const MainNav = () =>(
+  <Stack.Navigator headerMode="screen">
+    <Stack.Screen 
+      name="Home"
+      component={TabNav}
+      options={{headerShown:false}} />
+    <Stack.Screen
+      name="EntryDetail"
+      component={EntryDetails}
+      options={{
+        headerTintColor: white,
+        headerStyle:{
+          backgroundColor:purple
+        }
+      }} />
+
+  </Stack.Navigator>
+)
 
 export default class App extends Component {
   render() {
     return (
       <Provider store={createStore(reducer)}>
         <View style={{flex:1}}>
-          <UdaciStatusBar backgroundColor={purple} barStyle='light-content' />
           <NavigationContainer>
-            <Tabs.Navigator {...TabNavigatorConfig}>
-              <Tabs.Screen {...RouteConfigs['History']}/>
-              <Tabs.Screen {...RouteConfigs['AddEntry']}/>
-            </Tabs.Navigator>
+            <UdaciStatusBar backgroundColor={purple} barStyle='light-content' />
+            <MainNav />
           </NavigationContainer>
         </View>
       </Provider>
